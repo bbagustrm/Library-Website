@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('code')->unique();
             $table->string('judul');
+            $table->string('description');
             $table->string('img')->nullable();
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
             $table->boolean('status')->default(true);

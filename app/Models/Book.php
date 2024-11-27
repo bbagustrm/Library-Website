@@ -9,12 +9,13 @@ class Book extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['code', 'judul', 'img', 'category_id', 'status'];
+    protected $fillable = ['code', 'judul', 'description', 'img', 'category_id', 'status'];
 
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
+    
 
     public function peminjamans()
     {
