@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Book;
 use App\Models\Category;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Peminjaman;
+use App\Models\Wishlist;
 
 
 class UserController extends Controller
@@ -47,5 +50,35 @@ class UserController extends Controller
         $book = Book::with('category')->findOrFail($id);
 
         return view('user.detail', compact('book'));
+    }
+
+    public function profile()
+    {
+        $userId = Auth::id();
+
+        // Dalam Pengajuan
+        $pengajuan = Peminjaman::where('user_id', $userId)
+            ->where('status', 'pengajuan')
+            ->with('book.category') // Eager load book dan category
+            ->get();
+
+        // Dalam Peminjaman
+        $peminjaman = Peminjaman::where('user_id', $userId)
+            ->where('status', 'belum')
+            ->with('book.category') // Eager load book dan category
+            ->get();
+
+        // Histori Peminjaman
+        $histori = Peminjaman::where('user_id', $userId)
+            ->where('status', 'sudah')
+            ->with('book.category') // Eager load book dan category
+            ->get();
+
+        // Wishlist
+        $wishlist = Wishlist::where('user_id', $userId)
+            ->with('book.category') // Eager load book dan category
+            ->get();
+
+        return view('user.profile', compact('pengajuan', 'peminjaman', 'histori', 'wishlist'));
     }
 }

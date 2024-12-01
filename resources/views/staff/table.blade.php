@@ -1,12 +1,14 @@
-@extends('layouts.appAdmin')
+@extends('layouts.appStaff')
 
 @section('content')
     <div class="mx-auto w-full min-h-[100vh] flex">
         <!-- Sidebar -->
         <div class="w-1/4 min-h-full bg-white p-8 flex flex-col gap-2">
-            <a href="{{ route('admin.dashboard') }}" id="dashboardLink"
-                class="text-lg font-semibold py-2 px-6 hover:bg-slate-200 block bg-slate-100 hover:underline rounded-full">Dashboard</a>
-            <a href="{{ route('admin.dataBooks') }}" id="tableLink" class="text-lg py-2 px-6 hover:underline block">Data Books</a>
+            <a href="{{ route('staff.dashboard') }}" id="dashboardLink"
+                class="text-lg py-2 px-6 hover:underline block">Dashboard</a>
+            <a href="{{ route('staff.table') }}" id="tableLink"
+                class=" text-lg font-semibold py-2 px-6 hover:bg-slate-200 block bg-slate-100 hover:underline rounded-full">Tabel
+                Peminjaman</a>
         </div>
 
         <!-- Main Content -->
@@ -30,6 +32,7 @@
                 </table>
             </div>
 
+
         </div>
     </div>
 
@@ -39,7 +42,7 @@
           var table = $('.data-table').DataTable({
               processing: true,
               serverSide: true,
-              ajax: "{{ route('admin.table') }}",
+              ajax: "{{ route('staff.table') }}",
               columns: [
                 {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
                 {data: 'book.judul', name: 'book.judul'},
@@ -53,5 +56,4 @@
               
         });
       </script>
-   
 @endsection
