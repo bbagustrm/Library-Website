@@ -15,7 +15,23 @@ class AdminController extends Controller
 {
     public function index()
     {
-        return view('admin/dashboard');
+        $oneMonthAgo = Carbon::now()->subMonth(); // 1 bulan terakhir
+        $today = Carbon::today(); // Hari ini
+
+        // Data untuk chart peminjaman 1 bulan terakhir
+        $peminjamanBulanan = Peminjaman::selectRaw('DATE(created_at) as tanggal, COUNT(*) as jumlah')
+            ->where('created_at', '>=', $oneMonthAgo)
+            ->groupBy('tanggal')
+            ->orderBy('tanggal')
+            ->get();
+
+        // Data untuk peminjam hari ini
+        $peminjamHariIni = Peminjaman::whereDate('created_at', $today)->count();
+
+        return view('admin.dashboard', [
+            'peminjamanBulanan' => $peminjamanBulanan,
+            'peminjamHariIni' => $peminjamHariIni
+        ]);
     }
 
 
@@ -141,6 +157,10 @@ class AdminController extends Controller
 
     public function dataBooks(Request $request)
     {
+        // Statistik buku berdasarkan status
+        $tersedia = Book::where('status', 1)->count(); // Buku tersedia
+        $terpinjam = Book::where('status', 0)->count(); // Buku terpinjam
+        
         if ($request->ajax()) {
             $data = Book::with('category')->get();
 
@@ -162,7 +182,7 @@ class AdminController extends Controller
 
                     $btn = '<div class="flex">' .
                         '<a href="' . route('admin.editBook', $row->id) . '" class="edit btn btn-warning btn-sm mr-2">Edit</a>' .
-                        '<button class="delete btn btn-danger btn-sm" data-id="' . $row->id . '">Delete</button>'.
+                        '<button class="delete btn btn-danger btn-sm" data-id="' . $row->id . '">Delete</button>' .
                         '</div>';
                     return $btn;
                 })
@@ -170,7 +190,10 @@ class AdminController extends Controller
                 ->make(true);
         }
 
-        return view('admin.dataBooks');
+        return view('admin.dataBooks', [
+            'tersedia' => $tersedia,
+            'terpinjam' => $terpinjam
+        ]);
     }
 
     public function createBook(Request $request)

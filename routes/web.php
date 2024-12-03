@@ -48,5 +48,5 @@ Route::get('/admin/books/create', [AdminController::class, 'createBook'])->name(
 Route::get('/admin/books/edit/{id}', [AdminController::class, 'editBook'])->name('admin.editBook')->middleware('isAdmin');
 Route::post('/books/store', [AdminController::class, 'storeBook'])->name('admin.storeBook')->middleware('isAdmin');
 Route::put('/books/update/{id}', [AdminController::class, 'updateBook'])->name('admin.updateBook')->middleware('isAdmin');
-Route::delete('/books/delete/{id}', [AdminController::class, 'deleteBook'])->name('admin.deleteBook');
+Route::delete('/books/delete/{id}', [AdminController::class, 'deleteBook'])->name('admin.deleteBook')->middleware('isAdmin');
 
