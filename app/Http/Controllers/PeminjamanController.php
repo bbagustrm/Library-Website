@@ -18,12 +18,21 @@ class PeminjamanController extends Controller
         // Periksa apakah sudah ada peminjaman dengan user_id dan buku_id yang sama
         $existingPeminjaman = Peminjaman::where('buku_id', $request->buku_id)
             ->where('user_id', Auth::user()->id)
+            ->whereIn('status', ['belum'])
             ->first();
 
         if ($existingPeminjaman) {
-            return redirect()->back()->with('error', 'Anda sudah mengajukan peminjaman untuk buku ini.');
+            return redirect()->back()->with('error', 'Anda sudah meminjam buku ini.');
         }
 
+        $existingPeminjaman2 = Peminjaman::where('buku_id', $request->buku_id)
+            ->where('user_id', Auth::user()->id)
+            ->whereIn('status', ['pengajuan'])
+            ->first();
+
+        if ($existingPeminjaman2) {
+            return redirect()->back()->with('error', 'Anda sudah mengajukan peminjaman untuk buku ini.');
+        }
         // Buat peminjaman baru
         Peminjaman::create([
             'buku_id' => $request->buku_id,
